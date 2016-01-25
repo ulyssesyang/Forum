@@ -140,16 +140,18 @@ module YuYangForum
 		end
 
 		get "/forum/:name/addrate" do
+			@topic_name = URI.escape(params[:name])
 			if !current_user
 				@str=Warningmsg.notlogin
 				erb :welcome
 			else
 				Topic.add_rate_by_name(params[:name])
-				redirect "/forum/#{params[:name]}"
+				redirect "/forum/#{@topic_name}"
 			end
 		end
 
 		get "/forum/:name/delrate" do
+			@topic_name = URI.escape(params[:name])
 			get_rate = Topic.get_rate_by_name(params["name"])
 			if !current_user
 				@str=Warningmsg.notlogin
@@ -157,7 +159,7 @@ module YuYangForum
 			elsif get_rate>0
 				Topic.del_rate_by_name(params[:name])
 			end
-			redirect "/forum/#{params[:name]}"
+			redirect "/forum/#{@topic_name}"
 		end
 
 		get "/forum/addtopic" do
@@ -194,6 +196,7 @@ module YuYangForum
 		end
 
 		get "/forum/:name/edittopic" do
+			@topic_name = URI.escape(params[:name])
 			topic_name=params[:name]
 			@topics = Topic.find_by_topic_name(topic_name)
 			if !current_user
@@ -201,26 +204,29 @@ module YuYangForum
 				erb :welcome
 			elsif current_user['id']!=@topics.first['user_id']
 				@str=Warningmsg.notcreator
-				redirect "/forum/#{params[:name]}"
+				redirect "/forum/#{@topic_name}"
 			else
 				erb :topic_edit
 			end
 		end
 
 		put "/forum/:name/edittopic" do
+			@topic_name = URI.escape(params[:name])
 			topic_name=params[:name]
 			@topics = Topic.find_by_topic_name(topic_name)
 			get_topic = Topic.find_by_topic_name(params["new_name"])
+			@new_name = URI.escape(params["new_name"])
 			if topic_name!=params["new_name"] && get_topic.values.length>0
 				@str=Warningmsg.already_exist
 				erb :topic_edit
 			else
 				Topic.update_topic(params["new_name"],params["description"],params["img_url"],topic_name)
-				redirect "/forum/#{params[:new_name]}"
+				redirect "/forum/#{@new_name}"
 			end
 		end
 
 		delete "/forum/:name/delete" do
+			@topic_name = URI.escape(params[:name])
 			topic_name = params[:name]
 			@topics = Topic.find_by_topic_name(topic_name)
 			if !current_user
@@ -228,7 +234,7 @@ module YuYangForum
 				erb :welcome
 			elsif current_user['id']!=@topics.first['user_id']
 				@str=Warningmsg.notcreator
-				redirect "/forum/#{params[:name]}"
+				redirect "/forum/#{@topic_name}"
 			else
 				
 				Topic.del_topic(topic_name)
@@ -247,7 +253,8 @@ module YuYangForum
 		end
 
 		post "/forum/:name/adddisc" do
-			@topic_name = params[:name]
+			@topic_name = URI.escape(params[:name])
+			# @topic_name = params[:name]
 			if !current_user
 				@str      = Warningmsg.notlogin
 				erb :welcome
@@ -262,13 +269,14 @@ module YuYangForum
 					topic_id= @topics.first['id'].to_i
 					new_disc= Disc.create_disc(params["disc_name"],params["description"],params["img_url"],user_id,topic_id)
 					@str=Warningmsg.success
-					redirect "/forum/#{params[:name]}"
+					redirect "/forum/#{@topic_name}"
 				end
 			end
 		end
 
 		get "/forum/:name/:discid" do
-			@topic_name = params[:name]
+			@topic_name = URI.escape(params[:name])
+			# @topic_name = params[:name]
 			disc_id 		= params[:discid].to_i
 			@discs  		= Disc.find_by_disc_id(disc_id)
 	    @comments		= Comment.find_by_disc_id(disc_id)
@@ -276,16 +284,18 @@ module YuYangForum
 		end
 
 		get "/forum/:name/:discid/addrate" do
+			@topic_name = URI.escape(params[:name])
 			if !current_user
 				@str = Warningmsg.notlogin
 				erb :welcome
 			else
 				Disc.add_rate(params[:discid])
-				redirect "/forum/#{params[:name]}/#{params[:discid]}"
+				redirect "/forum/#{@topic_name}/#{params[:discid]}"
 			end
 		end
 
 		get "/forum/:name/:discid/delrate" do
+			@topic_name = URI.escape(params[:name])
 			get_rate = Disc.get_rate(params[:discid])
 			if !current_user
 				@str=Warningmsg.notlogin
@@ -293,7 +303,7 @@ module YuYangForum
 			elsif get_rate>0
 				Disc.del_rate(params[:discid])
 			end
-			redirect "/forum/#{params[:name]}/#{params[:discid]}"
+			redirect "/forum/#{@topic_name}/#{params[:discid]}"
 		end
 
 		get "/forum/:name/:discid/editdisc" do
@@ -306,7 +316,7 @@ module YuYangForum
 				erb :welcome
 			elsif current_user['id']!=@discs.first['user_id']
 				@str=Warningmsg.notcreator
-				redirect "/forum/#{params[:name]}"
+				redirect "/forum/#{@topic_name}"
 			else
 				erb :disc_edit
 			end
@@ -325,7 +335,7 @@ module YuYangForum
 			else
 				Disc.update_disc(params["new_name"],params["description"],params["img_url"],disc_id)
 				@str      = Warningmsg.success
-				redirect "/forum/#{params[:name]}/#{params[:discid]}"
+				redirect "/forum/#{@topic_name}/#{params[:discid]}"
 			end
 		end
 
@@ -339,12 +349,12 @@ module YuYangForum
 				erb :welcome
 			elsif current_user['id']!=@discs.first['user_id']
 				@str 			= Warningmsg.notcreator
-				redirect "/forum/#{params[:name]}"
+				redirect "/forum/#{@topic_name}"
 			else
 				Comment.del_comm_by_disc_id(disc_id)
 				Disc.del_disc(disc_id)
 				@str 			= Warningmsg.success
-				redirect "/forum/#{params[:name]}"
+				redirect "/forum/#{@topic_name}"
 			end
 		end
 
@@ -373,7 +383,7 @@ module YuYangForum
 				user_id   = current_user['id'].to_i
 				new_comm  = Comment.create_comm(params["description"],params["img_url"],user_id,@disc_id)
 				@str=Warningmsg.success
-				redirect "/forum/#{params[:name]}/#{params[:discid]}"
+				redirect "/forum/#{@topic_name}/#{params[:discid]}"
 			end
 		end
 
@@ -388,7 +398,7 @@ module YuYangForum
 				erb :welcome
 			elsif current_user['id']!=@comments.first['user_id']
 				@str      = Warningmsg.notcreator
-				redirect "/forum/#{params[:name]}/#{params[:discid]}"
+				redirect "/forum/#{@topic_name}/#{params[:discid]}"
 			else
 				erb :comm_edit
 			end
@@ -416,11 +426,11 @@ module YuYangForum
 				erb :welcome
 			elsif current_user['id'] != @comments.first['user_id']
 				@str      = Warningmsg.notcreator
-				redirect "/forum/#{params[:name]}/#{params[:discid]}"
+				redirect "/forum/#{@topic_name}/#{params[:discid]}"
 			else
 				Comment.del_comm_by_comm_id(@comm_id)
 				@str      = Warningmsg.success
-				redirect "/forum/#{params[:name]}/#{params[:discid]}"
+				redirect "/forum/#{@topic_name}/#{params[:discid]}"
 			end
 		end
 
