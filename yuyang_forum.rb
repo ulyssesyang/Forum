@@ -297,7 +297,8 @@ module YuYangForum
 		end
 
 		get "/forum/:name/:discid/editdisc" do
-			@topic_name = params[:name]
+			@topic_name = URI.escape(params[:name])
+			# @topic_name = params[:name]
 			disc_id 		= params[:discid].to_i
 			@discs      = Disc.find_by_disc_id(disc_id)
 			if !current_user
@@ -312,7 +313,8 @@ module YuYangForum
 		end
 
 		put "/forum/:name/:discid/editdisc" do
-			@topic_name = params[:name]
+			@topic_name = URI.escape(params[:name])
+			# @topic_name = params[:name]
 			disc_id 		= params[:discid]
 			@discs 			= Disc.find_by_disc_id(disc_id)
 			disc_name=@discs.first['name']
@@ -328,7 +330,8 @@ module YuYangForum
 		end
 
 		delete "/forum/:name/:discid/delete" do
-			@topic_name = params[:name]
+			@topic_name = URI.escape(params[:name])
+			# @topic_name = params[:name]
 			disc_id     = params[:discid].to_i
 			@discs      = Disc.find_by_disc_id(disc_id)
 			if !current_user
@@ -346,7 +349,8 @@ module YuYangForum
 		end
 
 		get "/forum/:name/:discid/addcomm" do
-			@topic_name = params[:name]
+			@topic_name = URI.escape(params[:name])
+			# @topic_name = params[:name]
 			@disc_id    = params[:discid].to_i
 			if !current_user
 				@str      = Warningmsg.notlogin
@@ -359,7 +363,8 @@ module YuYangForum
 		end
 
 		post "/forum/:name/:discid/addcomm" do
-			@topic_name = params[:name]
+			@topic_name = URI.escape(params[:name])
+			# @topic_name = params[:name]
 			@disc_id    = params[:discid].to_i
 			if !current_user
 				@str      = Warningmsg.notlogin
@@ -373,7 +378,8 @@ module YuYangForum
 		end
 
 		get "/forum/:name/:discid/:commid/editcomm" do
-			@topic_name = params[:name]
+			@topic_name = URI.escape(params[:name])
+			# @topic_name = params[:name]
 			@disc_id    = params[:discid].to_i
 			@comm_id    = params[:commid].to_i
 			@comments   = Comment.find_by_comm_id(@comm_id)
@@ -389,7 +395,8 @@ module YuYangForum
 		end
 
 		put "/forum/:name/:discid/:commid/editcomm" do
-			@topic_name = params[:name]
+			@topic_name = URI.escape(params[:name])
+			# @topic_name = params[:name]
 			@disc_id    = params[:discid].to_i
 			@comm_id    = params[:commid].to_i
 			@comments   = Comment.find_by_comm_id(@comm_id)
@@ -399,7 +406,8 @@ module YuYangForum
 		end
 
 		delete "/forum/:name/:discid/:commid/delete" do
-			@topic_name = params[:name]
+			@topic_name = URI.escape(params[:name])
+			# @topic_name = params[:name]
 			@disc_id    = params[:discid].to_i
 			@comm_id    = params[:commid].to_i
 			@comments   = Comment.find_by_comm_id(@comm_id)
