@@ -402,7 +402,7 @@ module YuYangForum
 			@comments   = Comment.find_by_comm_id(@comm_id)
 			Comment.update_comm(params["description"],params["img_url"],@comm_id)
 			@str  			= Warningmsg.success
-			redirect "/forum/#{params[:name]}/#{params[:discid]}"
+			redirect "/forum/#{@topic_name}/#{params[:discid]}"
 		end
 
 		delete "/forum/:name/:discid/:commid/delete" do
