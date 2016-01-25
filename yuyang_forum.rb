@@ -2,6 +2,7 @@ require 'pry'
 require "sinatra/base"
 require "bcrypt"
 require "redcarpet"
+require 'uri'
 
 require_relative 'models/connect'
 require_relative 'models/markdown'
